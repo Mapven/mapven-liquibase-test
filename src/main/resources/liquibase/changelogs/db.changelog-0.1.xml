@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="jtorregrosa" id="changelog-0.1.create">
+        <createTable tableName="project">
+            <column name="id" type="int">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true" />
+            </column>
+            <column name="url" type="varchar(255)" />
+            <column name="organization" type="varchar(255)" />
+            <column name="description" type="text" />
+            <column name="cvsUrl" type="varchar(255)" />
+            <column name="creationDate" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addAutoIncrement columnDataType="int" columnName="id" incrementBy="1" tableName="project"/>
+        <rollback>
+            <dropTable tableName="project"/>
+        </rollback>
+    </changeSet>
+    <changeSet author="jtorregrosa" id="changelog-0.1.insert" context="test">
+        <!--<insert tableName="project">
+            <column name="name" type="varchar(255)" value="TestProject-01"/>
+            <column name="url" type="varchar(255)" value="http://www.test.com"/>
+            <column name="organization" type="varchar(255)" value="TestOrganization-01"/>
+            <column name="description" type="varchar(255)" value="This a dummy test description."/>
+            <column name="cvsUrl" type="varchar(255)" value="http://www.trello.es"/>
+        </insert>-->
+        <loadUpdateData encoding="UTF-8"
+                        file="src/main/resources/liquibase/testdata1.csv"
+                        primaryKey="id"
+                        quotchar="'"
+                        separator=","
+                        tableName="project">
+            <column name="id" type="NUMERIC" />
+            <column name="name" type="STRING"/>
+            <column name="url" type="STRING" />
+            <column name="organization" type="STRING" />
+            <column name="description" type="STRING" />
+            <column name="cvsUrl" type="STRING" />
+        </loadUpdateData>
+        <rollback>
+            <delete tableName="project">
+                <where>id >= 0</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
